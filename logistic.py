@@ -26,6 +26,48 @@ from sklearn.metrics import confusion_matrix,accuracy_score,classification_repor
 
 score=accuracy_score(y_test,y_ped)
 print(score)
-cm=confusion_matrix(y_ped,y_test)
+cm=confusion_matrix(y_test,y_ped)
+print(cm)
+print(classification_report(y_test,y_ped))
+
+model=LogisticRegression()
+c_values=[100,10,1,0.1,0.01]
+param=[
+    {'l1_ratio': [0.0, 1.0], 'C': c_values, 'solver': ['liblinear']},
+    {'l1_ratio': [0.0, 0.5, 1.0], 'C': c_values, 'solver': ['saga']},
+    {'l1_ratio': [0.0], 'C': c_values, 'solver': ['lbfgs', 'newton-cg', 'sag']}
+]
+#CV->cross validation we use GridSearch
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import StratifiedKFold
+cv=StratifiedKFold()
+gsv=GridSearchCV(estimator=model,param_grid=param,scoring='accuracy',cv=cv,n_jobs=-1)
+print(gsv)
+gsv.fit(x_train,y_train)
+print(gsv.best_params_)
+print(gsv.best_score_)
+y_ped=gsv.predict(x_test)
+
+score=accuracy_score(y_test,y_ped)
+print(score)
+cm=confusion_matrix(y_test,y_ped)
+print(cm)
+print(classification_report(y_test,y_ped))
+
+
+#Randomized search cv
+from sklearn.model_selection import RandomizedSearchCV
+model=LogisticRegression()
+rs=RandomizedSearchCV(estimator=model,param_distributions=param,cv=5,scoring='accuracy',n_jobs=-1)
+rs.fit(x_train,y_train)
+
+print(rs.best_params_)
+print(rs.best_score_)
+
+y_ped=rs.predict(x_test)
+
+score=accuracy_score(y_test,y_ped)
+print(score)
+cm=confusion_matrix(y_test,y_ped)
 print(cm)
 print(classification_report(y_test,y_ped))
