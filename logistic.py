@@ -19,7 +19,10 @@ ls.fit(x_train,y_train)
 y_ped=ls.predict(x_test)
 print(y_ped)
 print(ls.predict_proba(x_test))
-
+plt.scatter(y_test,y_ped)
+plt.xlabel("Actual")
+plt.ylabel("predicted")
+plt.show()
 #Performance metrics
 
 from sklearn.metrics import confusion_matrix,accuracy_score,classification_report
